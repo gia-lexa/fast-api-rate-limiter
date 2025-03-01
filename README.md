@@ -67,7 +67,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 ---
 
-## 🔗 API Endpoints
+## 🔗 API Endpoints So Far
 
 | **Method** | **Endpoint** | **Description** |
 |-----------|------------|----------------|
@@ -77,7 +77,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ---
 
 ## 🎯 Why I Love This Work
-Security-first API design is a must-have in our current landscape, where **secure authentication, rate limiting, and access control are critical. 
+Security-first API design is a must-have in our current landscape, where secure authentication, rate limiting, and access control are critical. Whatever services I build, I want people to feel safe using them.
 
 This project allows me to design, build, and optimize backend security systems by demonstrating:
 - ✅ **Rate limiting & API security best practices** – Protecting against abuse and DDoS.
