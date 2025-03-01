@@ -5,11 +5,15 @@ from fastapi import FastAPI, Request, HTTPException # FastAPI components help wi
 # Initialize FastAPI application
 app = FastAPI()
 
+@app.get("/") # Temporarily add in a route as an inception point
+async def root():
+    return {"message": "Welcome to the Rate Limiter API!"}
+
 # Connect to redis server
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
 
 RATE_LIMIT = 100 # Max allowed requests per time window
-Window = 600 # Time window in seconds (10 minutes)
+WINDOW = 600 # Time window in seconds (10 minutes)
 
 # instantiate FastAPI decordator that intercepts all requests before they 
 # reach route handlers, allowing modification of the request, eg
