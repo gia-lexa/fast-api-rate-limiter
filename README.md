@@ -4,7 +4,7 @@ I Rate-Limited My Own API. Because Even Good Ideas Need Boundaries.
 
 FastAPI Rate-Limited Public API
 
-Overview
+### Overview
 
 This project is a FastAPI-based public API that implements rate limiting using Redis. The goal is to prevent excessive API usage by enforcing request limits per user/IP within a specified time window. This ensures fair usage and prevents abuse.
 
