@@ -3,7 +3,7 @@
 ## 🔥 Why This Project?
 This API is built to **handle high-traffic workloads while preventing abuse**, using **rate limiting and Redis caching**. 
 
-Security is a major focus for me, and I’m especially interested in companies like **1Password, Okta, and Cloudflare**—leaders in authentication, secure access control, and API protection. This project is a **practical demonstration of my ability to design and implement security-first APIs**, enforcing **strict rate limits, blocking abuse, and ensuring scalable request management**—essential in modern cloud-based authentication and API security systems.
+Security is a major focus for me, and I’m especially interested in authentication, secure access control, and API protection. This project is a **practical demonstration of my ability to design and implement security-first APIs**, enforcing **strict rate limits, blocking abuse, and ensuring scalable request management**—essential in modern cloud-based authentication and API security systems.
 
 ## ✅ What's Already Built
 ### **Scalability & Performance**
