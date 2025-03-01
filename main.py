@@ -1,13 +1,11 @@
 import redis # Import redis client to interact with redis server
 import time # To manage time-based rate limiting
 from fastapi import FastAPI, Request, HTTPException # FastAPI components help with API handling
+from routes import router  # Import the router from routes.py
 
-# Initialize FastAPI application
+# Initialize FastAPI application and call routes
 app = FastAPI()
-
-@app.get("/") # Temporarily add in a route as an inception point
-async def root():
-    return {"message": "Welcome to the Rate Limiter API!"}
+app.include_router(router)
 
 # Connect to redis server
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
