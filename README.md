@@ -3,7 +3,7 @@
 ## 🔥 Why This Project?
 This API is built to **handle high-traffic workloads while preventing abuse**, using **rate limiting and Redis caching**. 
 
-Security is a major focus for me, and I’m especially interested in authentication, secure access control, and API protection. This project is a **practical demonstration of my ability to design and implement security-first APIs**, enforcing **strict rate limits, blocking abuse, and ensuring scalable request management**—essential in modern cloud-based authentication and API security systems.
+Security is a central focus for me as a backend engineer—I’m especially interested in authentication, secure access control, and API protection. This project is a **practical demonstration of my ability to design and implement security-first APIs**, enforcing **strict rate limits, blocking abuse, and ensuring scalable request management**—essential in modern cloud-based authentication and API security systems. This starts out as a fixed-window rate limiter, but each week, I'll iterate over that, instaniating more dynamic application-level rate limiting, and then infrastructure rate limiting, in addition to monitoring and logging.
 
 ## ✅ What's Already Built
 ### **Scalability & Performance**
