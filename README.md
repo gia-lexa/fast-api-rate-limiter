@@ -52,7 +52,7 @@ Rate Limiter Performance (Benchmark @ 10,000 requests):
 ✅ **Prometheus + Grafana Monitoring** – Real-time dashboards
 
 ## Disclaimer
-This project is a **technical demonstration** of advanced rate-limiting strategies. It is **not intended for deployment in real-world environments**. It serves as an exploration of best practices in scalable rate limiting.
+This project is a **technical demonstration** of advanced rate-limiting strategies. While provided under the MIT License, it is **not optimized for production use**, and no guarantees are made regarding security, reliability, or real-world performance. It serves as an exploration of best practices in scalable rate limiting.
 
 ---
 
