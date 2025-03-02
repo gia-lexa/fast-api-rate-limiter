@@ -1,7 +1,7 @@
 # Advanced Rate Limiting Strategies in FastAPI 🚀
 
 ## Overview
-A high-performance API rate limiter implementing **Fixed Window, Sliding Window, Token Bucket, and Leaky Bucket** algorithms using **FastAPI + Redis**. Optimized for **scalability**, **low-latency enforcement**, and **distributed API rate control**.
+An advanced exploration of high-performance rate limiting, leveraging Redis for precision control and scalability.
 
 ## System Design
 The system is designed for **high-throughput APIs** handling **millions of requests** while preventing abuse. It efficiently tracks request counts using **Redis** with **O(log n) time complexity** for rate checks. Optimized **expiry policies** ensure **minimal memory overhead**.
@@ -46,14 +46,15 @@ Rate Limiter Performance (Benchmark @ 10,000 requests):
 - Can be extended for **multi-node rate limiting** using **Redis Cluster** or **consistent hashing**.
 - Supports **dynamic rate limits** (e.g., per-user tiers, API keys).
 
-## In Progress Enhancements
+## Future Enhancements Currently In-Progress
 ✅ **JWT-Based API Rate Limits** – Per-user quotas instead of IP-based limits
 ✅ **Rate Limit Adaptation** – Machine learning to dynamically adjust limits
 ✅ **Prometheus + Grafana Monitoring** – Real-time dashboards
 
+## Disclaimer
+This project is a **technical demonstration** of advanced rate-limiting strategies. It is **not intended for deployment in real-world environments**. It serves as an exploration of best practices in scalable rate limiting.
+
 ---
 
-## Disclaimer  
-This project is a technical demonstration of advanced rate-limiting strategies. It is not intended for deployment in real-world environments but serves as an exploration of best practices in scalable rate limiting.
-
+🚀 **This project showcases production-level rate limiting strategies, balancing speed, fairness, and resilience for high-scale APIs.**
 
