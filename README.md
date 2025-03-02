@@ -48,7 +48,9 @@ Rate Limiter Performance (Benchmark @ 10,000 requests):
 
 ## Future Enhancements Currently In-Progress
 ✅ **JWT-Based API Rate Limits** – Per-user quotas instead of IP-based limits
+
 ✅ **Rate Limit Adaptation** – Machine learning to dynamically adjust limits
+
 ✅ **Prometheus + Grafana Monitoring** – Real-time dashboards
 
 ## Disclaimer
