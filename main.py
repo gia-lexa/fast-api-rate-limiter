@@ -1,6 +1,7 @@
 import redis # Import redis client to interact with redis server
 import time # To manage time-based rate limiting
 from fastapi import FastAPI, Request, HTTPException # FastAPI components help with API handling
+from fastapi.responses import JSONResponse
 from routes import router  # Import the router from routes.py
 
 # Initialize FastAPI application and call routes
@@ -27,7 +28,8 @@ async def sliding_window_rate_limiter(request: Request, call_next):
     request_count = redis_client.zcard(redis_key)
 
     if request_count >= RATE_LIMIT:
-        raise HTTPException(status_code=429, detail="Rate limit exceeded")
+      return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"})
+
 
     # Add the current request timestamp to Redis
     redis_client.zadd(redis_key, {current_time: current_time})
