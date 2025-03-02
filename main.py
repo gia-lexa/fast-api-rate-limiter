@@ -7,30 +7,33 @@ from routes import router  # Import the router from routes.py
 app = FastAPI()
 app.include_router(router)
 
-# Connect to redis server
+# Connect to Redis
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
 
-RATE_LIMIT = 100 # Max allowed requests per time window
-WINDOW = 600 # Time window in seconds (10 minutes)
+# Rate limiting settings
+RATE_LIMIT = 100  # Max requests allowed
+WINDOW_SIZE = 600  # Time window in seconds (10 minutes)
 
-# instantiate FastAPI decordator that intercepts all requests before they 
-# reach route handlers, allowing modification of the request, eg
-# auth, rate limitng,logging, etc
 @app.middleware("http")
-async def rate_limiter(request: Request, call_next):
-  client_ip = request.client.host
-  current_time = int(time.time() // WINDOW)
-  key = f"rate_limit:{client_ip}:{current_time}"  # Generate a unique key for the IP and time window
-  
-  request_count = redis_client.incr(key)  # Increment request count in Redis for this key
+async def sliding_window_rate_limiter(request: Request, call_next):
+    client_ip = request.client.host  # Identify user by IP (or API key later)
+    current_time = time.time()  # Get current timestamp
+    redis_key = f"rate_limit:{client_ip}"  # Unique key for each user
 
-  if request_count == 1:
-        redis_client.expire(key, WINDOW)  # Set expiration time for the key to match the window duration
+    # Remove outdated requests (older than WINDOW_SIZE)
+    redis_client.zremrangebyscore(redis_key, 0, current_time - WINDOW_SIZE)
 
-  if request_count > RATE_LIMIT:
-        # If request count exceeds the limit, return a 429 Too Many Requests error
+    # Count valid requests within the window
+    request_count = redis_client.zcard(redis_key)
+
+    if request_count >= RATE_LIMIT:
         raise HTTPException(status_code=429, detail="Rate limit exceeded")
-  
-  # If within limit, process the request normally
-  response = await call_next(request)
-  return response
+
+    # Add the current request timestamp to Redis
+    redis_client.zadd(redis_key, {current_time: current_time})
+
+    # Set expiry slightly longer than WINDOW_SIZE to optimize memory usage
+    redis_client.expire(redis_key, WINDOW_SIZE + 1)
+
+    response = await call_next(request)
+    return response
