@@ -16,26 +16,29 @@ RATE_LIMIT = 100  # Max requests allowed
 WINDOW_SIZE = 600  # Time window in seconds (10 minutes)
 
 @app.middleware("http")
-async def sliding_window_rate_limiter(request: Request, call_next):
+async def leaky_bucket_rate_limiter(request: Request, call_next):
     client_ip = request.client.host  # Identify user by IP (or API key later)
     current_time = time.time()  # Get current timestamp
     redis_key = f"rate_limit:{client_ip}"  # Unique key for each user
 
-    # Remove outdated requests (older than WINDOW_SIZE)
-    redis_client.zremrangebyscore(redis_key, 0, current_time - WINDOW_SIZE)
+    
+    # Define bucket settings
+    BUCKET_CAPACITY = 100  # Max requests allowed in the bucket
+    LEAK_RATE = 1  # Requests processed per second
 
-    # Count valid requests within the window
-    request_count = redis_client.zcard(redis_key)
+    # Remove old requests beyond leak rate
+    redis_client.ltrim(redis_key, 0, BUCKET_CAPACITY - 1)  # Keep only last N requests
 
-    if request_count >= RATE_LIMIT:
-      return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"})
+    # Get the current bucket size
+    bucket_size = redis_client.llen(redis_key)
 
+    if bucket_size >= BUCKET_CAPACITY:
+        return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"})
 
-    # Add the current request timestamp to Redis
-    redis_client.zadd(redis_key, {current_time: current_time})
+    # Add the current request to the bucket
+    redis_client.lpush(redis_key, current_time)
 
-    # Set expiry slightly longer than WINDOW_SIZE to optimize memory usage
-    redis_client.expire(redis_key, WINDOW_SIZE + 1)
+    # Set expiration based on leak rate
+    redis_client.expire(redis_key, BUCKET_CAPACITY // LEAK_RATE)
 
-    response = await call_next(request)
-    return response
+    return await call_next(request)
