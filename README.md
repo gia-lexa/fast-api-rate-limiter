@@ -5,7 +5,14 @@ This API is built to **handle high-traffic workloads while preventing abuse**, u
 
 Security is a central focus for me as a backend engineer—I especially enjoy authentication, secure access control, and API protection. This project is a **practical demonstration of my ability to design and implement security-first APIs**, enforcing **strict rate limits, blocking abuse, and ensuring scalable request management**—essential in modern cloud-based authentication and API security systems. 
 
-This tool started out as a fixed-window rate limiter, but I'm taking an iterative approach. I've currently replaced fixed window with sliding window for more dynamic application-level rate limiting. The next steps are JWT-based API keys and then infrastructure rate limiting, in addition to monitoring and logging.
+This tool is being build iteratively building off the original rate limiting pattern into patterns that are more complex and dynamic. Examples of previous iterations can be seen in previous commits.
+- Fixed window ✅
+- Sliding window ✅
+- Leaky Bucket ✅
+- Token Bucket (in progress)
+- JWT-based API Keys
+
+  Once those are complete, I'll move onto infrastructure rate limiting, in addition to adding monitoring and logging.
 
 ## ✅ What's Already Built
 ### **Scalability & Performance**
