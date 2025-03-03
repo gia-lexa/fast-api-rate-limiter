@@ -22,12 +22,12 @@ The system is designed for **high-throughput APIs** handling **millions of reque
 ```
 
 ## Algorithm Choices
-Each algorithm is optimized for different use cases:
+Each algorithm is optimized for different use cases. The current main.py implements Leaky Bucket, but earlier commits of that file show the implementations of Fixed Window and Sliding Window. 
 
 - **Fixed Window** – Simple but allows bursts at window edges
 - **Sliding Window** – More accurate, avoids bursts
-- **Token Bucket** – Allows short bursts while enforcing long-term limits
 - **Leaky Bucket** – Ensures a **smooth** request flow
+- **Token Bucket** – Allows short bursts while enforcing long-term limits
 
 ## Performance Benchmarks
 ```
@@ -35,7 +35,6 @@ Rate Limiter Performance (Benchmark @ 10,000 requests):
 -------------------------------------------------------
 ✔ Fixed Window    →  120μs avg latency, O(1) Redis ops
 ✔ Sliding Window  →  150μs avg latency, O(log n) Redis ops
-✔ Token Bucket    →  140μs avg latency, O(1) Redis ops
 ✔ Leaky Bucket    →  130μs avg latency, O(1) Redis ops
 ```
 📌 Designed for **low-latency enforcement** and **high scalability**.
@@ -54,7 +53,7 @@ Rate Limiter Performance (Benchmark @ 10,000 requests):
 ✅ **Prometheus + Grafana Monitoring** – Real-time dashboards
 
 ## Disclaimer
-This project is a **technical demonstration** of advanced rate-limiting strategies. While provided under the MIT License, it is **not optimized for production use**, and no guarantees are made regarding security, reliability, or real-world performance. It serves as an exploration of best practices in scalable rate limiting.
+This project is an in-progress **technical demonstration** of advanced rate-limiting strategies. While provided under the MIT License, it is **not optimized for production use**, and no guarantees are made regarding security, reliability, or real-world performance. It serves as an exploration of best practices in scalable rate limiting.
 
 ---
 
