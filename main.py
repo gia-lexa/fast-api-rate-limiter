@@ -1,7 +1,9 @@
 import redis # Import redis client to interact with redis server
 import time # To manage time-based rate limiting
+import jwt
 from fastapi import FastAPI, Request, HTTPException # FastAPI components help with API handling
 from fastapi.responses import JSONResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from routes import router  # Import the router from routes.py
 
 # Initialize FastAPI application and call routes
@@ -11,34 +13,49 @@ app.include_router(router)
 # Connect to Redis
 redis_client = redis.Redis(host="localhost", port=6379, db=0)
 
-# Rate limiting settings
-RATE_LIMIT = 100  # Max requests allowed
-WINDOW_SIZE = 600  # Time window in seconds (10 minutes)
+SECRET_KEY = "use your own secret"
+security = HTTPBearer()
+
+# Rate limiting settings by user role
+RATE_LIMITS = {
+    "free": (100, 600),  # 100 requests per 10 min
+    "premium": (500, 600),  # 500 requests per 10 min
+}
+
+def decode_jwt(token: str):
+    try:
+        return jwt.decode(token, SECRET_KEY, algorithms="HS256")
+    except  jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    
 
 @app.middleware("http")
-async def leaky_bucket_rate_limiter(request: Request, call_next):
-    client_ip = request.client.host  # Identify user by IP (or API key later)
-    current_time = time.time()  # Get current timestamp
-    redis_key = f"rate_limit:{client_ip}"  # Unique key for each user
-
+async def jwt_based_rate_limiter(request: Request, call_next):
+    auth= request.headers.get("Auhorization")
     
-    # Define bucket settings
-    BUCKET_CAPACITY = 100  # Max requests allowed in the bucket
-    LEAK_RATE = 1  # Requests processed per second
+    if not auth:
+        return JSONResponse(status_code=401, content={"detail": "Missing token"})
+    
 
-    # Remove old requests beyond leak rate
-    redis_client.ltrim(redis_key, 0, BUCKET_CAPACITY - 1)  # Keep only last N requests
+    token = auth.split("Bearer ")[-1]
+    user_data = decode_jwt(token)  # Extract user info
+    user_id = user_data["user_id"]
+    user_role = user_data.get("role", "free")  # Default to free
 
-    # Get the current bucket size
-    bucket_size = redis_client.llen(redis_key)
+    max_requests, window_size = RATE_LIMITS.get(user_role, RATE_LIMITS["free"])
+    redis_key = f"rate_limit:{user_id}"
 
-    if bucket_size >= BUCKET_CAPACITY:
+    # Sliding window logic
+    current_time = time.time()
+    redis_client.zremrangebyscore(redis_key, 0, current_time - window_size)
+    request_count = redis_client.zcard(redis_key)
+
+    if request_count >= max_requests:
         return JSONResponse(status_code=429, content={"detail": "Rate limit exceeded"})
 
-    # Add the current request to the bucket
-    redis_client.lpush(redis_key, current_time)
-
-    # Set expiration based on leak rate
-    redis_client.expire(redis_key, BUCKET_CAPACITY // LEAK_RATE)
+    redis_client.zadd(redis_key, {current_time: current_time})
+    redis_client.expire(redis_key, window_size + 1)
 
     return await call_next(request)
